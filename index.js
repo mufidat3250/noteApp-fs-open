@@ -83,7 +83,7 @@ app.delete("/api/notes/:id", (request, responce) => {
 
 app.use(unknownEndpoint);
 
-const PORT = process.env.PORT | 3003;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`);
 });
