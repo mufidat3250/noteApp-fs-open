@@ -1,7 +1,7 @@
-GET http://localhost:3003/api/notes/
+GET http://localhost:3003/api/notes
 ###
 
-POST http://localhost:3003/api/notes
+POST https://abiola-app.herokuapp.com/api/notes
 Content-Type: application/json
     
 {
@@ -15,7 +15,6 @@ POST http://localhost:3003/api/notes
 Content-Type: application/json
     
 {
-     "content": "i am coming home",
+     "content": "i am on my way",
     "importance":false
-
 }

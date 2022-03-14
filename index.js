@@ -1,10 +1,36 @@
+const mongoose = require("mongoose");
 require("dotenv").config();
 const express = require("express");
 const cor = require("cors");
+const Note = require("./mongo");
 
 const app = express();
 app.use(cor());
 app.use(express.json());
+
+const url = process.env.MONGO_DB_URL;
+
+mongoose
+  .connect(url)
+  .then((result) => console.log("connected"))
+  .catch((error) => console.log("not connected", error.message));
+
+const noteSchema = new mongoose.Schema({
+  content: String,
+  date: Date,
+  important: Boolean,
+});
+
+// const Note = mongoose.model("Note", noteSchema);
+// console.log(Note);
+
+noteSchema.set("toJSON", {
+  tranform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
+  },
+});
 
 let notes = [
   {
@@ -45,9 +71,11 @@ const unknownEndpoint = (request, response) => {
 };
 
 app.use(requestLogger);
-app.get("/api/notes", (request, response) => {
-  response.json(notes);
+app.use(express.static("build"));
+app.get("/api/notes", async (request, response) => {
+  Note.find({}).then((note) => response.json(note));
 });
+
 app.get("/api/notes/:id", (request, response) => {
   let id = +request.params.id;
   const note = notes.find((note) => +note.id == id);
@@ -60,19 +88,19 @@ app.get("/api/notes/:id", (request, response) => {
 });
 
 app.post("/api/notes", (req, res) => {
-  const body = req.body;
-  if (!body.content) {
-    return res.status(404).json({ error: "content missing" });
+  let { content, important } = req.body;
+  if (!content) {
+    res.status(404).json({ error: "content missing" });
   }
   const newNote = {
-    content: body.content,
-    important: body.important || false,
+    content: content,
+    important: important | false,
     date: new Date(),
-    id: idGen(),
   };
 
-  notes = notes.concat(newNote);
-  res.json(newNote);
+  newNote.save().then((savedNote) => {
+    res.json(savedNote);
+  });
 });
 
 app.delete("/api/notes/:id", (request, responce) => {
@@ -83,7 +111,7 @@ app.delete("/api/notes/:id", (request, responce) => {
 
 app.use(unknownEndpoint);
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT | 3001;
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`);
 });
