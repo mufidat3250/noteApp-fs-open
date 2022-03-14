@@ -1,12 +1,14 @@
-GET http://localhost:3003/api/notes
+GET http://localhost:3003/api/notes HTTP/1.1
 ###
+
+
+GET http://localhost:3003/api/notes/622f052222b66d900550467
 
 POST https://abiola-app.herokuapp.com/api/notes
 Content-Type: application/json
     
 {
     "importance":false
-
 }
 
 ###
@@ -15,6 +17,18 @@ POST http://localhost:3003/api/notes
 Content-Type: application/json
     
 {
-     "content": "i am on my way",
-    "importance":false
+     "content": "allready in love with this trasformation",
+    "importance":true
+}
+
+###
+
+DELETE http://localhost:3003/api/notes/622f037e2b3d2dc42bce6e1
+
+PUT http://localhost:3003/api/notes/622f1a31e35718e7c3a33b78
+Content-Type: application/json
+
+{
+    "content": "updated",
+    "important": "true"
 }

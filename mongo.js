@@ -19,36 +19,18 @@ try {
   console.log("not connected");
 }
 
-const noteSchema = mongoose.Schema({
+const noteSchema = new mongoose.Schema({
   content: String,
+  date: Date,
   important: Boolean,
 });
 
-const Note = mongoose.model("Note", noteSchema);
-
-// const newNote = new Note({
-//   content: "give me money",
-//   important: true,
-// });
-
-// Note.find({}).then((result) => {
-//   result.forEach((note) => console.log(note));
-// });
-
-// Note.find({ important: true }).then((result) => {
-//   result.forEach((note) => console.log(note));
-// });
-
-// newNote.save().then(() => {
-//   console.log("note saved");
-//   mongoose.connection.close();
-// });
 noteSchema.set("toJSON", {
-  tranform: (document, returnedObject) => {
+  transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
   },
 });
 
-module.exports = Note;
+module.exports = mongoose.model("Note", noteSchema);
